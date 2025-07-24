@@ -11,6 +11,7 @@ gs4_auth(path = keyfile)
 
 # Your Google Maps API key
 api_key <- Sys.getenv("GOOGLEMAPS_API_KEY")
+print(paste("API key :",api_key))
 
 #routes <- read.csv("data/routes.csv")
 sheet_url <- "https://docs.google.com/spreadsheets/d/1gn_S5CmDFZTuLHE43yAx37sdnKmTyY-LS_L_jugc5_U/edit?gid=1954153640#gid=1954153640"
