@@ -36,11 +36,15 @@ for (i in seq_along(origins)) {
       mode = mode,
       key = api_key
     ))
+    print(paste("res ",res))
     
     content_raw <- content(res, "text", encoding = "UTF-8")
+    print(paste0("content_raw ",content_raw)
     data <- fromJSON(content_raw)
+    print(paste0("data ",data)
     
     element <- data$rows$elements[[1]]
+    print(paste0("element ",element)
     
     # Skip if no result
     if (element$status != "OK") {
