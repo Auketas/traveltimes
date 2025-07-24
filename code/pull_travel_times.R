@@ -73,6 +73,7 @@ time_part <- format(portugal_time, "%H:%M:%S")
 
 results$date <- date_part
 results$time <- time_part
+results$weekday <- weekdays(date_part)
 
 
 
