@@ -5,6 +5,8 @@ library(dplyr)
 
 # Read secret key from environment variable
 key <- Sys.getenv("GCP_SHEETS_KEY")
+cat(substr(Sys.getenv("GCP_SHEETS_KEY"), 1, 100))
+
 
 # Write it to a temporary file
 keyfile <- tempfile(fileext = ".json")
