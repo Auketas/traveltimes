@@ -15,7 +15,7 @@ api_key <- Sys.getenv("GOOGLEMAPS_API_KEY")
 #routes <- read.csv("data/routes.csv")
 sheet_url <- "https://docs.google.com/spreadsheets/d/1gn_S5CmDFZTuLHE43yAx37sdnKmTyY-LS_L_jugc5_U/edit?gid=1954153640#gid=1954153640"
 routes <- read_sheet(sheet_url, sheet = "Routes")
-resultsfull <- read.sheet(sheet_url, sheet = "Results")
+resultsfull <- read_sheet(sheet_url, sheet = "Results")
 
 origins <- routes$Origin
 destinations <- routes$Destination
