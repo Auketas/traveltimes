@@ -1,5 +1,17 @@
 library(httr)
 library(jsonlite)
+library(googlesheets4)
+library(jsonlite)
+
+# Read secret key from environment variable
+key <- Sys.getenv("GCP_SHEETS_KEY")
+
+# Write it to a temporary file
+keyfile <- tempfile(fileext = ".json")
+writeLines(key, keyfile)
+
+# Authenticate with service account
+gs4_auth(path = keyfile)
 
 # Your Google Maps API key
 api_key <- Sys.getenv("GOOGLEMAPS_API_KEY")
