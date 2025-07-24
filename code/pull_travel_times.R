@@ -16,8 +16,8 @@ api_key <- Sys.getenv("GOOGLEMAPS_API_KEY")
 sheet_url <- "https://docs.google.com/spreadsheets/d/1gn_S5CmDFZTuLHE43yAx37sdnKmTyY-LS_L_jugc5_U/edit?gid=1954153640#gid=1954153640"
 routes <- read_sheet(sheet_url, sheet = "Routes")
 
-origins <- routes$Origins
-destinations <- routes$Destinations
+origins <- routes$Origin
+destinations <- routes$Destination
 modes <- c("driving", "transit", "walking", "bicycling") 
 
 # Initialize empty data frame to store results
