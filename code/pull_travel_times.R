@@ -16,7 +16,9 @@ gs4_auth(path = keyfile)
 # Your Google Maps API key
 api_key <- Sys.getenv("GOOGLEMAPS_API_KEY")
 
-routes <- read.csv("data/routes.csv")
+#routes <- read.csv("data/routes.csv")
+sheet_url <- "https://docs.google.com/spreadsheets/d/1gn_S5CmDFZTuLHE43yAx37sdnKmTyY-LS_L_jugc5_U/edit?gid=1954153640#gid=1954153640"
+routes <- read_sheet(sheet_url, sheet = "Routes")
 
 origins <- routes$Origins
 destinations <- routes$Destinations
@@ -76,10 +78,16 @@ time_part <- format(portugal_time, "%H:%M:%S")
 results$date <- date_part
 results$time <- time_part
 
+
+
 if(file.exists("data/traveltimes.csv")){
   resultsfull <- read.csv("data/traveltimes.csv")
   resultsfull <- rbind(resultsfull,results)
   write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
 }else{
-  write.csv(results,"data/traveltimes.csv",row.names=FALSE)
+  resultsfull <- results
+  write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
 }
+
+sheet_write(resultsfull, ss = sheet_url, sheet = "Results")
+
