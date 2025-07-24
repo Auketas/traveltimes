@@ -1,7 +1,7 @@
 library(httr)
 library(jsonlite)
 library(googlesheets4)
-library(jsonlite)
+library(dplyr)
 
 # Read secret key from environment variable
 key <- Sys.getenv("GCP_SHEETS_KEY")
