@@ -11,7 +11,6 @@ gs4_auth(path = keyfile)
 
 # Your Google Maps API key
 api_key <- Sys.getenv("GOOGLEMAPS_API_KEY")
-print(paste("API key :",api_key))
 
 #routes <- read.csv("data/routes.csv")
 sheet_url <- "https://docs.google.com/spreadsheets/d/1gn_S5CmDFZTuLHE43yAx37sdnKmTyY-LS_L_jugc5_U/edit?gid=1954153640#gid=1954153640"
@@ -28,7 +27,6 @@ results <- data.frame()
 for (i in seq_along(origins)) {
   origin <- origins[i]
   destination <- destinations[i]
-  print(paste("Trying", origin, "to", destination))
   
   for (mode in modes) {
     res <- GET("https://maps.googleapis.com/maps/api/distancematrix/json", query = list(
@@ -37,15 +35,11 @@ for (i in seq_along(origins)) {
       mode = mode,
       key = api_key
     ))
-    print(paste("res ",res))
     
     content_raw <- content(res, "text", encoding = "UTF-8")
-    print(paste0("content_raw ",content_raw))
     data <- fromJSON(content_raw)
-    print(paste0("data ",data))
     
     element <- data$rows$elements[[1]]
-    print(paste0("element ",element))
     
     # Skip if no result
     if (element$status != "OK") {
@@ -84,6 +78,10 @@ results$time <- time_part
 
 if(file.exists("data/traveltimes.csv")){
   resultsfull <- read.csv("data/traveltimes.csv")
+  print(ncol(resultsfull))
+  print(colnames(resultsfull))
+  print(ncol(results))
+  print(colnames(results))
   resultsfull <- rbind(resultsfull,results)
   write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
 }else{
