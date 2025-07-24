@@ -15,6 +15,7 @@ api_key <- Sys.getenv("GOOGLEMAPS_API_KEY")
 #routes <- read.csv("data/routes.csv")
 sheet_url <- "https://docs.google.com/spreadsheets/d/1gn_S5CmDFZTuLHE43yAx37sdnKmTyY-LS_L_jugc5_U/edit?gid=1954153640#gid=1954153640"
 routes <- read_sheet(sheet_url, sheet = "Routes")
+resultsfull <- read.sheet(sheet_url, sheet = "Results")
 
 origins <- routes$Origin
 destinations <- routes$Destination
@@ -77,18 +78,15 @@ results$weekday <- weekdays(as.Date(date_part))
 
 
 
-if(file.exists("data/traveltimes.csv")){
-  resultsfull <- read.csv("data/traveltimes.csv")
-  print(ncol(resultsfull))
-  print(colnames(resultsfull))
-  print(ncol(results))
-  print(colnames(results))
-  resultsfull <- rbind(resultsfull,results)
-  write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
-}else{
-  resultsfull <- results
-  write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
-}
+#if(file.exists("data/traveltimes.csv")){
+  #resultsfull <- read.csv("data/traveltimes.csv")
+  #resultsfull <- rbind(resultsfull,results)
+  #write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
+#}else{
+  #resultsfull <- results
+  #write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
+#}
+resultsfull <- rbind(resultsfull,results)
 
 sheet_write(resultsfull, ss = sheet_url, sheet = "Results")
 
