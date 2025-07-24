@@ -27,6 +27,7 @@ results <- data.frame()
 for (i in seq_along(origins)) {
   origin <- origins[i]
   destination <- destinations[i]
+  print(paste("Trying", origin, "to", destination, "by", mode))
   
   for (mode in modes) {
     res <- GET("https://maps.googleapis.com/maps/api/distancematrix/json", query = list(
