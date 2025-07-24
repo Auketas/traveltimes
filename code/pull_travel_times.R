@@ -5,14 +5,8 @@ library(dplyr)
 
 # Read secret key from environment variable
 key <- Sys.getenv("GCP_SHEETS_KEY")
-print(paste("First 100 characters of GCP_SHEETS_KEY:", substr(key, 1, 100)))
-
-
-# Write it to a temporary file
 keyfile <- tempfile(fileext = ".json")
 writeLines(key, keyfile)
-
-# Authenticate with service account
 gs4_auth(path = keyfile)
 
 # Your Google Maps API key
