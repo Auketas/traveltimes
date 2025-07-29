@@ -2,8 +2,12 @@ name: Run Travel Times Script
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Runs daily at 6am UTC
-  workflow_dispatch:      # Manual trigger
+    - cron: '0 5 * * *'    # 06:00 PT
+    - cron: '30 7 * * *'   # 08:30 PT
+    - cron: '0 13 * * *'   # 14:00 PT
+    - cron: '30 16 * * *'  # 17:30 PT
+    - cron: '0 23 * * *'   # 00:00 PT
+  workflow_dispatch:        # Manual trigger
 
 jobs:
   run-script:
