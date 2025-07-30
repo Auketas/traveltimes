@@ -17,8 +17,8 @@ sheet_url <- "https://docs.google.com/spreadsheets/d/1gn_S5CmDFZTuLHE43yAx37sdnK
 routes <- read_sheet(sheet_url, sheet = "Routes")
 resultsfull <- read_sheet(sheet_url, sheet = "Results")
 
-origins <- routes$Origin
-destinations <- routes$Destination
+origins <- c(routes$Origin,routes$Destination)
+destinations <- c(routes$Destination,routes$Origin)
 modes <- c("driving", "transit", "walking", "bicycling") 
 
 # Initialize empty data frame to store results
