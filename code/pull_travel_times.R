@@ -30,39 +30,49 @@ for (i in seq_along(origins)) {
   destination <- destinations[i]
   
   for (mode in modes) {
-    res <- GET("https://maps.googleapis.com/maps/api/distancematrix/json", query = list(
-      origins = origin,
-      destinations = destination,
-      mode = mode,
-      key = api_key
-    ))
-    
-    content_raw <- content(res, "text", encoding = "UTF-8")
-    data <- fromJSON(content_raw)
-    
-    element <- data$rows$elements[[1]]
-    
-    # Skip if no result
-    if (element$status != "OK") {
-      duration_text <- NA
-      duration_value <- NA
-      status <- element$status
+  params <- list(
+    origins = origin,
+    destinations = destination,
+    mode = mode,
+    key = api_key
+  )
+  
+  if (mode == "driving") {
+    params$departure_time <- "now"         # enables live traffic
+    params$traffic_model <- "best_guess"   # can also be "optimistic" or "pessimistic"
+  }
+  
+  res <- GET("https://maps.googleapis.com/maps/api/distancematrix/json", query = params)
+  
+  content_raw <- content(res, "text", encoding = "UTF-8")
+  data <- fromJSON(content_raw)
+  
+  element <- data$rows$elements[[1]]
+  
+  if (element$status != "OK") {
+    duration_text <- NA
+    duration_value <- NA
+    status <- element$status
+  } else {
+    if (mode == "driving" && !is.null(element$duration_in_traffic)) {
+      duration_text <- element$duration_in_traffic$text
+      duration_value <- element$duration_in_traffic$value
     } else {
       duration_text <- element$duration$text
       duration_value <- element$duration$value
-      status <- "OK"
     }
-    
-    # Append to results
-    results <- rbind(results, data.frame(
-      origin = origin,
-      destination = destination,
-      mode = mode,
-      duration_text = duration_text,
-      duration_sec = duration_value,
-      status = status,
-      stringsAsFactors = FALSE
-    ))
+    status <- "OK"
+  }
+  
+  results <- rbind(results, data.frame(
+    origin = origin,
+    destination = destination,
+    mode = mode,
+    duration_text = duration_text,
+    duration_sec = duration_value,
+    status = status,
+    stringsAsFactors = FALSE
+  ))
   }
 }
 
