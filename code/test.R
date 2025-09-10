@@ -130,8 +130,8 @@ results$date <- date_part
 results$time <- time_part
 results$weekday <- weekdays(as.Date(date_part))
 resultsmode$Date <- date_part
-results$time <- time_part
-results$Weekday <- weekdays(as.Date(date_part))
+resultsmode$time <- time_part
+resultsmode$Weekday <- weekdays(as.Date(date_part))
 
 
 
