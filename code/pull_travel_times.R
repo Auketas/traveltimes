@@ -16,6 +16,7 @@ api_key <- Sys.getenv("GOOGLEMAPS_API_KEY")
 sheet_url <- "https://docs.google.com/spreadsheets/d/1gn_S5CmDFZTuLHE43yAx37sdnKmTyY-LS_L_jugc5_U/edit?gid=1954153640#gid=1954153640"
 routes <- read_sheet(sheet_url, sheet = "Routes")
 resultsfull <- read_sheet(sheet_url, sheet = "Results")
+resultsmodefull <- read_sheet(sheet_url, sheet="Transportmode")
 
 origins <- c(routes$Origin,routes$Destination)
 destinations <- c(routes$Destination,routes$Origin)
@@ -23,6 +24,7 @@ modes <- c("driving", "transit", "walking", "bicycling")
 
 # Initialize empty data frame to store results
 results <- data.frame()
+resultsmode <- data.frame()
 
 # Loop over pairs
 for (i in seq_along(origins)) {
@@ -40,6 +42,48 @@ for (i in seq_along(origins)) {
   if (mode == "driving") {
     params$departure_time <- "now"         # enables live traffic
     params$traffic_model <- "best_guess"   # can also be "optimistic" or "pessimistic"
+  }
+
+  if (mode=="transit"){
+
+      # Build request body
+      body <- list(
+        origin = list(address = origin),
+        destination = list(address = destination),
+        travelMode = "TRANSIT"
+      )
+      
+      # Send POST request
+      dir_res <- POST(
+        url = "https://routes.googleapis.com/directions/v2:computeRoutes",
+        add_headers(
+          "Content-Type" = "application/json",
+          "X-Goog-Api-Key" = api_key,
+          "X-Goog-FieldMask" = "routes.duration,routes.distanceMeters,routes.legs.steps"
+        ),
+        body = toJSON(body, auto_unbox = TRUE)
+      )
+      
+      # Parse response
+      dir_content <- content(dir_res, "text", encoding = "UTF-8")
+      dir_data <- fromJSON(dir_content, simplifyVector = FALSE)
+      steps <- dir_data$routes[[1]]$legs[[1]]$steps
+      
+      modesuse <- c()
+      for(i in 1:length(steps)){
+        modesuse[i] <- ifelse(steps[[i]]$travelMode=="TRANSIT",steps[[i]]$transitDetails$transitLine$vehicle$type,steps[[i]]$travelMode)
+      }
+      modesuse <- modesuse[modesuse!="WALK"]
+      modesuse <- paste(modesuse,collapse="-")
+      
+      resultsmode <- rbind(resultsmode, data.frame(
+        Origin = origin,
+        Destination = destination,
+        Modes = modesuse,
+        stringsAsFactors = FALSE
+      )
+      )
+    
   }
   
   res <- GET("https://maps.googleapis.com/maps/api/distancematrix/json", query = params)
@@ -85,6 +129,9 @@ time_part <- format(portugal_time, "%H:%M:%S")
 results$date <- date_part
 results$time <- time_part
 results$weekday <- weekdays(as.Date(date_part))
+resultsmode$Date <- date_part
+resultsmode$time <- time_part
+resultsmode$Weekday <- weekdays(as.Date(date_part))
 
 
 
@@ -96,7 +143,18 @@ results$weekday <- weekdays(as.Date(date_part))
   #resultsfull <- results
   #write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
 #}
+print("results")
+print(ncol(resultsfull))
+print(colnames(resultsfull))
+print(ncol(results))
+print(colnames(results))
+print("results mode")
+print(ncol(resultsmodefull))
+print(colnames(resultsmodefull))
+print(ncol(resultsmode))
+print(colnames(resultsmode))
 resultsfull <- rbind(resultsfull,results)
+resultsmodefull <- rbind(resultsmodefull,resultsmode)
 
 sheet_write(resultsfull, ss = sheet_url, sheet = "Results")
-
+sheet_write(resultsmodefull, ss = sheet_url, sheet = "Transportmode")
