@@ -1,4 +1,4 @@
-name: Run Travel Times Script
+name: Test
 
 on:
   workflow_dispatch:        # Manual trigger only
