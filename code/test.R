@@ -143,6 +143,12 @@ results$Weekday <- weekdays(as.Date(date_part))
   #resultsfull <- results
   #write.csv(resultsfull,"data/traveltimes.csv",row.names=FALSE)
 #}
+print("results")
+print(ncol(resultsfull))
+print(ncol(results))
+print("results mode")
+print(ncol(resultsmodefull))
+print(ncol(resultsmode))
 resultsfull <- rbind(resultsfull,results)
 resultsmodefull <- rbind(resultsmodefull,resultsmode)
 
